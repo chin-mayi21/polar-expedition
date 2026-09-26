@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
-import { PolarLogo } from "@/components/brand/polar-logo";
+import { CryoLinkLogo } from "@/components/brand/cryolink-logo";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { ROLE_ENTRIES } from "@/lib/auth/role-entry";
 import { cn } from "@/lib/utils";
@@ -11,7 +11,7 @@ export function RoleEntryScreen() {
   return (
     <div className="min-h-dvh bg-bg">
       <header className="flex items-center justify-between border-b border-border bg-surface px-6 py-4">
-        <PolarLogo />
+        <CryoLinkLogo />
         <div className="flex items-center gap-4">
           <p className="hidden font-mono text-[10px] uppercase tracking-widest text-text-secondary sm:block">
             MoES / NCPOR
@@ -23,7 +23,7 @@ export function RoleEntryScreen() {
       <main className="mx-auto max-w-5xl px-6 py-10">
         <div className="max-w-2xl border-b border-border pb-8">
           <h1 className="font-display text-3xl font-semibold tracking-tight text-text-primary">
-            Sign in to POLAR-NEXUS
+            Sign in to CryoLink
           </h1>
           <p className="mt-3 text-sm leading-relaxed text-text-secondary">
             Select your access role to continue. Authorization is verified on the server after sign-in — this

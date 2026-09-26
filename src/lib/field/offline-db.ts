@@ -1,6 +1,6 @@
 import type { FieldOperationType } from "@/lib/field/operations";
 
-const DB_NAME = "polar-nexus-field";
+const DB_NAME = "cryolink-field";
 const DB_VERSION = 1;
 const STORE = "queue";
 

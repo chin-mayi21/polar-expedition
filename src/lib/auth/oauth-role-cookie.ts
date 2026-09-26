@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import type { UserRole } from "@prisma/client";
 import { isUserRole } from "@/lib/auth/role-entry";
 
-export const OAUTH_ROLE_COOKIE = "polar_oauth_role";
+export const OAUTH_ROLE_COOKIE = "cryolink_oauth_role";
 
 export async function setOAuthRoleCookie(role: UserRole) {
   const jar = await cookies();

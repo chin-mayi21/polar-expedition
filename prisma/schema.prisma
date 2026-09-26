@@ -1,4 +1,4 @@
-// POLAR-NEXUS — relational schema (SQLite local dev; switch provider to postgresql for Supabase)
+// CryoLink — relational schema (SQLite local dev; switch provider to postgresql for Supabase)
 // Current stock is NEVER stored on InventoryItem — use inventoryBalance query / view pattern below.
 
 generator client {

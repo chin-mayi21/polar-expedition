@@ -1,4 +1,4 @@
-# POLAR-NEXUS — locked color tokens
+# CryoLink — locked color tokens
 
 Light theme is **default**. CSS variables in `src/app/globals.css`.
 

@@ -43,7 +43,7 @@ async function main() {
   const invRows = await listInventoryForExpeditions([expedition.id]);
   const lowOrCritical = invRows.filter((r) => r.stockLevel !== "AVAILABLE");
 
-  console.log("=== POLAR-NEXUS seed verification ===");
+  console.log("=== CryoLink seed verification ===");
   console.log({
     expedition: expedition.code,
     status: expedition.status,

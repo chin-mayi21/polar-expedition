@@ -1,7 +1,7 @@
 {
-  "name": "POLAR-NEXUS Field",
-  "short_name": "POLAR Field",
-  "description": "Field personnel mission control — POLAR-NEXUS",
+  "name": "CryoLink Field",
+  "short_name": "CryoLink",
+  "description": "Field personnel mission control — CryoLink",
   "start_url": "/field/home",
   "display": "standalone",
   "background_color": "#F4F7FA",

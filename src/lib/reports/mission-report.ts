@@ -11,7 +11,7 @@ export type MissionReport = {
   missionId: string;
   missionCode: string;
   generatedAt: string;
-  generator: "polar-nexus-synthesis-v1";
+  generator: "cryolink-synthesis-v1";
   disclaimer: string;
   sections: MissionReportSection[];
   markdown: string;
@@ -110,7 +110,7 @@ export async function generateMissionReport(
 
   const markdown = [
     `# Mission report — ${mission.code}`,
-    `_Generated ${new Date().toISOString()} · polar-nexus-synthesis-v1 (deterministic; not a live LLM call)_`,
+    `_Generated ${new Date().toISOString()} · cryolink-synthesis-v1 (deterministic; not a live LLM call)_`,
     "",
     ...sections.map((s) => `## ${s.title}\n\n${s.body}\n`),
   ].join("\n");
@@ -119,7 +119,7 @@ export async function generateMissionReport(
     missionId: mission.id,
     missionCode: mission.code,
     generatedAt: new Date().toISOString(),
-    generator: "polar-nexus-synthesis-v1",
+    generator: "cryolink-synthesis-v1",
     disclaimer:
       "This report is synthesized from expedition database state for demo decision support. Verify against ECC and field check-ins before operational use.",
     sections,

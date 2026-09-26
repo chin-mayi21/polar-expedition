@@ -1,4 +1,4 @@
-# POLAR-NEXUS — spec → build status
+# CryoLink — spec → build status
 
 This file maps the **full SIH26062 prompt** to implementation phases.  
 **Checkpoint (approved before mass UI):** schema + seed + login + **HQ Inventory** (ledger + simulator).

@@ -25,12 +25,12 @@ const plexMono = IBM_Plex_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "POLAR-NEXUS",
-    template: "%s · POLAR-NEXUS",
+    default: "CryoLink",
+    template: "%s · CryoLink",
   },
   description:
     "Polar expedition logistics and mission control — MoES / NCPOR",
-  applicationName: "POLAR-NEXUS",
+  applicationName: "CryoLink",
   icons: {
     icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
     shortcut: "/favicon.svg",

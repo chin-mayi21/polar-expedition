@@ -457,7 +457,7 @@ async function main() {
     ],
   });
 
-  console.log("POLAR-NEXUS seed complete (ISEA-44).");
+  console.log("CryoLink seed complete (ISEA-44).");
   console.log("Demo logins (password for all: demo1234):");
   console.log("  Official:", "demo-official@ncpor.test");
   console.log("  Field:", "demo-field@ncpor.test");

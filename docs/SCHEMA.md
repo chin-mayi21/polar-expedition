@@ -1,4 +1,4 @@
-# POLAR-NEXUS — Prisma schema summary
+# CryoLink — Prisma schema summary
 
 Source: `prisma/schema.prisma` (SQLite local dev).
 

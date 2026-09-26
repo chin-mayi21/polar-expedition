@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
-import { PolarLogo } from "@/components/brand/polar-logo";
+import { CryoLinkLogo } from "@/components/brand/cryolink-logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -85,7 +85,7 @@ export default function LoginPage() {
       </header>
 
       <div className="mx-auto max-w-md px-4 py-10">
-        <PolarLogo />
+        <CryoLinkLogo />
         <div className="mt-8 flex items-start gap-3 border border-border bg-surface p-4 rounded-[4px]">
           <div className="flex h-10 w-10 items-center justify-center border border-border bg-bg rounded-[2px]">
             <RoleIcon className={`h-5 w-5 ${roleEntry.iconAccentClass}`} strokeWidth={1.75} aria-hidden />

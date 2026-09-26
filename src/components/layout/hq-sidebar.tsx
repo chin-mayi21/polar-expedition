@@ -16,7 +16,7 @@ import {
   FileBarChart,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { PolarLogo } from "@/components/brand/polar-logo";
+import { CryoLinkLogo } from "@/components/brand/cryolink-logo";
 
 const navItems = [
   { href: "/hq/overview", label: "Overview", icon: LayoutDashboard },
@@ -38,7 +38,7 @@ export function HqSidebar() {
   return (
     <aside className="flex h-full w-64 shrink-0 flex-col border-r border-border bg-navy text-white">
       <div className="border-b border-white/10 px-5 py-6">
-        <PolarLogo className="[&_p]:text-white [&_.font-display]:text-white" />
+        <CryoLinkLogo className="[&_p]:text-white [&_.font-display]:text-white" />
         <p className="mt-3 font-mono text-[10px] uppercase tracking-widest text-white/70">Operations — HQ</p>
       </div>
       <nav className="flex-1 space-y-0.5 overflow-y-auto px-2 py-4" aria-label="HQ navigation">

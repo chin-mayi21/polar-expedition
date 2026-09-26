@@ -16,7 +16,7 @@ export async function GET() {
   const exportedAt = new Date().toISOString();
 
   const packet = {
-    schema: "polar-nexus-audit-export-v1",
+    schema: "cryolink-audit-export-v1",
     exportedAt,
     expeditionIds: session.expeditionIds,
     eventCount: rows.length,
@@ -46,7 +46,7 @@ export async function GET() {
     status: 200,
     headers: {
       "Content-Type": "application/json",
-      "Content-Disposition": `attachment; filename="polar-nexus-audit-${exportedAt.slice(0, 10)}.json"`,
+      "Content-Disposition": `attachment; filename="cryolink-audit-${exportedAt.slice(0, 10)}.json"`,
     },
   });
 }

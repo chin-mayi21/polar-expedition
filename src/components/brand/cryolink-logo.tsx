@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 
-export function PolarLogo({ className, compact }: { className?: string; compact?: boolean }) {
+export function CryoLinkLogo({ className, compact }: { className?: string; compact?: boolean }) {
   return (
     <div className={cn("leading-tight", className)}>
       <p
@@ -9,7 +9,7 @@ export function PolarLogo({ className, compact }: { className?: string; compact?
           compact ? "text-base" : "text-lg"
         )}
       >
-        POLAR-NEXUS
+        CryoLink
       </p>
     </div>
   );
