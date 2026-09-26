@@ -22,8 +22,8 @@ export default async function HqOverviewPage() {
         <AttentionRequiredPanel items={bundle.attention} />
 
         <div className="grid gap-4 md:grid-cols-3">
-          <div className="border border-border bg-surface p-4 rounded-[2px]">
-            <p className="text-xs font-medium uppercase tracking-wide text-text-secondary">Expedition</p>
+          <div className="rich-card animate-rise-in p-4" style={{ animationDelay: "60ms" }}>
+            <p className="text-xs font-medium uppercase tracking-wide text-cyan">Expedition</p>
             <p className="mt-2 font-display text-lg font-semibold text-text-primary">
               {bundle.expedition?.name ?? "—"}
             </p>
@@ -33,14 +33,14 @@ export default async function HqOverviewPage() {
               </p>
             ) : null}
           </div>
-          <div className="border border-border bg-surface p-4 rounded-[2px]">
-            <p className="text-xs font-medium uppercase tracking-wide text-text-secondary">Inventory</p>
+          <div className="rich-card animate-rise-in p-4" style={{ animationDelay: "120ms" }}>
+            <p className="text-xs font-medium uppercase tracking-wide text-cyan">Inventory</p>
             <p className="mt-2 font-mono text-sm text-text-primary">
               {bundle.resource.inventoryCritical} critical · {bundle.resource.inventoryLow} low
             </p>
           </div>
-          <div className="border border-border bg-surface p-4 rounded-[2px]">
-            <p className="text-xs font-medium uppercase tracking-wide text-text-secondary">Assets</p>
+          <div className="rich-card animate-rise-in p-4" style={{ animationDelay: "180ms" }}>
+            <p className="text-xs font-medium uppercase tracking-wide text-cyan">Assets</p>
             <p className="mt-2 font-mono text-sm text-text-primary">
               {bundle.resource.assetsOperational} operational · {bundle.resource.assetsMaintenance} maintenance
             </p>

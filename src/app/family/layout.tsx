@@ -21,8 +21,8 @@ export default async function FamilyLayout({ children }: { children: React.React
 
   return (
     <div className="min-h-dvh bg-bg">
-      <header className="flex items-center justify-between border-b border-border bg-surface px-4 py-4">
-        <CryoLinkLogo compact />
+      <header className="flex items-center justify-between border-b border-border/80 bg-surface/90 px-4 py-4 backdrop-blur-md">
+        <CryoLinkLogo compact href="/family/status" />
         <div className="flex items-center gap-2">
           <span className="max-w-[10rem] truncate text-sm text-text-secondary">{session.name}</span>
           <ThemeToggle />

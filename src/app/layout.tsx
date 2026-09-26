@@ -28,9 +28,13 @@ export const metadata: Metadata = {
     default: "CryoLink",
     template: "%s · CryoLink",
   },
-  description:
-    "Polar expedition logistics and mission control — MoES / NCPOR",
+  description: "CryoLink — polar expedition logistics and mission control for MoES / NCPOR.",
   applicationName: "CryoLink",
+  openGraph: {
+    title: "CryoLink",
+    description: "Polar expedition mission control",
+    siteName: "CryoLink",
+  },
   icons: {
     icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
     shortcut: "/favicon.svg",
@@ -40,8 +44,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: dark)", color: "#0b1420" },
-    { media: "(prefers-color-scheme: light)", color: "#e4e9ef" },
+    { media: "(prefers-color-scheme: dark)", color: "#122238" },
+    { media: "(prefers-color-scheme: light)", color: "#5eb8e8" },
   ],
 };
 

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
+import { CryoLinkBackdrop } from "@/components/brand/cryolink-backdrop";
 import { CryoLinkLogo } from "@/components/brand/cryolink-logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -77,18 +78,20 @@ export default function LoginPage() {
   const RoleIcon = roleEntry.icon;
 
   return (
-    <div className="min-h-dvh bg-bg">
-      <header className="flex items-center justify-between border-b border-border bg-surface px-6 py-4">
-        <Link href="/" className="flex items-center gap-2 text-sm text-text-secondary hover:text-text-primary">
+    <div className="relative min-h-dvh bg-bg">
+      <CryoLinkBackdrop />
+      <header className="relative z-10 flex items-center justify-between border-b border-border/80 bg-surface/90 px-6 py-4 backdrop-blur-md">
+        <Link href="/" className="flex items-center gap-2 text-sm text-text-secondary transition-colors hover:text-cyan">
           <ArrowLeft className="h-4 w-4" aria-hidden />
-          Roles
+          CryoLink roles
         </Link>
         <ThemeToggle />
       </header>
 
-      <div className="mx-auto max-w-md px-4 py-10">
-        <CryoLinkLogo />
-        <div className="mt-8 flex items-start gap-3 border border-border bg-surface p-4 rounded-[4px]">
+      <div className="relative z-10 mx-auto max-w-md px-4 py-10 animate-rise-in">
+        <CryoLinkLogo href="/" />
+        <p className="mt-2 text-sm text-text-secondary">Sign in to continue as {roleEntry.title}</p>
+        <div className="mt-8 flex items-start gap-3 rich-card p-4">
           <div className="flex h-10 w-10 items-center justify-center border border-border bg-bg rounded-[2px]">
             <RoleIcon className={`h-5 w-5 ${roleEntry.iconAccentClass}`} strokeWidth={1.75} aria-hidden />
           </div>
@@ -107,7 +110,7 @@ export default function LoginPage() {
           </div>
         </div>
 
-        <form onSubmit={onSubmit} className="mt-4 space-y-5 border border-border bg-surface p-6 rounded-[4px]">
+        <form onSubmit={onSubmit} className="mt-4 space-y-5 rich-card p-6">
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input

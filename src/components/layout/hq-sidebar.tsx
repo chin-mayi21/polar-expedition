@@ -36,9 +36,9 @@ export function HqSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="flex h-full w-64 shrink-0 flex-col border-r border-border bg-navy text-white">
-      <div className="border-b border-white/10 px-5 py-6">
-        <CryoLinkLogo className="[&_p]:text-white [&_.font-display]:text-white" />
+    <aside className="hq-sidebar-gradient flex h-full w-64 shrink-0 flex-col border-r border-white/10 text-white shadow-lg">
+      <div className="border-b border-white/15 px-5 py-6">
+        <CryoLinkLogo inverted href="/hq/overview" />
         <p className="mt-3 font-mono text-[10px] uppercase tracking-widest text-white/70">Operations — HQ</p>
       </div>
       <nav className="flex-1 space-y-0.5 overflow-y-auto px-2 py-4" aria-label="HQ navigation">

@@ -13,12 +13,12 @@ export default function Icon() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "#0B2545",
+          background: "#4A94D4",
           borderRadius: 6,
         }}
       >
         <svg width="22" height="22" viewBox="0 0 32 32" fill="none">
-          <g stroke="#127475" strokeWidth="2" strokeLinecap="round">
+          <g stroke="#E8F6FC" strokeWidth="2" strokeLinecap="round">
             <path d="M16 6v20M16 6l2.5 4M16 6l-2.5 4M16 26l2.5-4M16 26l-2.5-4" />
             <path d="M8.5 11l15 10M8.5 21l15-10" />
             <path d="M23.5 11l-15 10M23.5 21l-15-10" />

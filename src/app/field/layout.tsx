@@ -20,8 +20,8 @@ export default async function FieldLayout({ children }: { children: React.ReactN
   return (
     <FieldSyncProvider>
       <div className="flex min-h-dvh flex-col bg-bg pb-24">
-        <header className="flex items-center justify-between border-b border-border px-4 py-4">
-          <CryoLinkLogo compact />
+        <header className="flex items-center justify-between border-b border-border/80 bg-surface/90 px-4 py-4 backdrop-blur-md">
+          <CryoLinkLogo compact href="/field/home" />
           <div className="flex items-center gap-2">
             <span className="max-w-[10rem] truncate text-sm text-muted-foreground">{session.name}</span>
             <ThemeToggle />
