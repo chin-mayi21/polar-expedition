@@ -1,3 +1,4 @@
+import "@/lib/auth/bootstrap-env";
 import type { NextAuthConfig } from "next-auth";
 import type { UserRole } from "@prisma/client";
 
