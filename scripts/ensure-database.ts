@@ -6,6 +6,7 @@ import { PrismaClient } from "@prisma/client";
  * Safe to run on every start (seed runs only when there are no users).
  */
 async function main() {
+  execSync("node scripts/sync-prisma-provider.mjs", { stdio: "inherit" });
   execSync("npx prisma db push --accept-data-loss", { stdio: "inherit" });
 
   const prisma = new PrismaClient();

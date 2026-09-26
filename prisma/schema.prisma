@@ -1,13 +1,12 @@
-// CryoLink — PostgreSQL (Neon / Vercel). For local SQLite, use a branch or Neon free dev DB.
+// CryoLink — provider synced from DATABASE_URL via scripts/sync-prisma-provider.mjs
 // Current stock is NEVER stored on InventoryItem — use inventoryBalance query / view pattern below.
 
 generator client {
-  provider      = "prisma-client-js"
-  binaryTargets = ["native", "rhel-openssl-3.0.x"]
+  provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 

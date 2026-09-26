@@ -13,6 +13,9 @@ function isBadAuthUrl(url: string | undefined) {
   if (lower === "http://localhost:10000") return true;
   // Render internal binding — not a browser URL
   if (/localhost:\d+/.test(lower) && process.env.RENDER) return true;
+  if (process.env.NODE_ENV === "development" && lower.includes("localhost") && !lower.includes(":3000") && !lower.includes(":3001")) {
+    return true;
+  }
   return false;
 }
 
@@ -33,6 +36,12 @@ export function bootstrapAuthEnv() {
 
   if (vercelHost && isBadAuthUrl(process.env.AUTH_URL)) {
     applyAuthUrl(vercelHost.startsWith("http") ? vercelHost : `https://${vercelHost}`);
+    return;
+  }
+
+  if (process.env.NODE_ENV === "development" && isBadAuthUrl(process.env.AUTH_URL)) {
+    const port = process.env.PORT || "3000";
+    applyAuthUrl(`http://localhost:${port}`);
     return;
   }
 
