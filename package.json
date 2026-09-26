@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "prisma generate && next build",
+    "vercel-build": "prisma generate && tsx scripts/vercel-prebuild.ts && next build",
     "start": "next start",
     "start:prod": "tsx scripts/ensure-database.ts && next start",
     "lint": "eslint",

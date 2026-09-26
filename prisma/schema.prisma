@@ -1,12 +1,13 @@
-// CryoLink — relational schema (SQLite local dev; switch provider to postgresql for Supabase)
+// CryoLink — PostgreSQL (Neon / Vercel). For local SQLite, use a branch or Neon free dev DB.
 // Current stock is NEVER stored on InventoryItem — use inventoryBalance query / view pattern below.
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
