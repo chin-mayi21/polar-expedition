@@ -1,0 +1,18 @@
+{
+  "name": "POLAR-NEXUS Field",
+  "short_name": "POLAR Field",
+  "description": "Field personnel mission control — POLAR-NEXUS",
+  "start_url": "/field/home",
+  "display": "standalone",
+  "background_color": "#F4F7FA",
+  "theme_color": "#0B2545",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

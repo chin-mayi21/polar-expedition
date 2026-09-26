@@ -1,0 +1,91 @@
+@import "tailwindcss";
+
+/* POLAR-NEXUS — locked palette (light default) */
+:root,
+.light {
+  --bg: #f4f7fa;
+  --surface: #ffffff;
+  --border: #e1e8ef;
+  --text-primary: #10203a;
+  --text-secondary: #5b6b82;
+  --navy: #0b2545;
+  --teal: #127475;
+  --teal-soft-bg: #e8f5f2;
+  --cyan: #1ca7c4;
+  --amber: #d89614;
+  --red: #c1272d;
+  --radius-data: 2px;
+  --radius-control: 4px;
+}
+
+.dark {
+  --bg: #0b141f;
+  --surface: #101b2d;
+  --border: #1f2d42;
+  --text-primary: #e8eef5;
+  --text-secondary: #8b9cb3;
+  --navy: #0b2545;
+  --teal: #3a9a9b;
+  --teal-soft-bg: #142822;
+  --cyan: #4bb8cc;
+  --amber: #c48a1a;
+  --red: #d44a50;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-border: var(--border);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-navy: var(--navy);
+  --color-teal: var(--teal);
+  --color-teal-soft-bg: var(--teal-soft-bg);
+  --color-cyan: var(--cyan);
+  --color-amber: var(--amber);
+  --color-red: var(--red);
+  /* shadcn-compat aliases */
+  --color-background: var(--bg);
+  --color-foreground: var(--text-primary);
+  --color-muted-foreground: var(--text-secondary);
+  --color-ring: var(--cyan);
+  --font-sans: var(--font-plex-sans);
+  --font-display: var(--font-source-serif);
+  --font-mono: var(--font-plex-mono);
+}
+
+html {
+  color-scheme: light;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: var(--font-plex-sans), system-ui, sans-serif;
+  min-height: 100dvh;
+}
+
+.font-display {
+  font-family: var(--font-source-serif), Georgia, serif;
+}
+
+.font-mono {
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-in {
+  animation: fade-in 200ms ease-out both;
+}

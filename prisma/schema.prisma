@@ -1,0 +1,448 @@
+// POLAR-NEXUS — relational schema (SQLite local dev; switch provider to postgresql for Supabase)
+// Current stock is NEVER stored on InventoryItem — use inventoryBalance query / view pattern below.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Auth & access ───────────────────────────────────────────────────────────
+
+enum UserRole {
+  OPERATIONS_OFFICIAL
+  FIELD_PERSONNEL
+  FAMILY_NOK
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  passwordHash String
+  googleId     String?  @unique
+  role         UserRole
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  /// Field login linked to expedition roster record
+  personnelId    String?    @unique
+  personnel      Personnel? @relation("UserPersonnel", fields: [personnelId], references: [id])
+
+  /// Family / next-of-kin sees only their linked personnel's safe check-in summary
+  nextOfKinForId String?    @unique
+  nextOfKinFor   Personnel? @relation("NextOfKinUser", fields: [nextOfKinForId], references: [id])
+
+  expeditionScopes UserExpeditionScope[]
+  auditEvents      AuditEvent[]          @relation("AuditActor")
+  cargoEvents      CargoEvent[]
+  inventoryTxns    InventoryTransaction[]
+  syncOperations   SyncOperation[]
+}
+
+/// HQ officials may manage multiple expeditions; scope enforced server-side
+model UserExpeditionScope {
+  userId       String
+  expeditionId String
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expedition   Expedition @relation(fields: [expeditionId], references: [id], onDelete: Cascade)
+
+  @@id([userId, expeditionId])
+}
+
+// ─── Expedition core ─────────────────────────────────────────────────────────
+
+enum ExpeditionStatus {
+  DRAFT
+  READY
+  ACTIVE
+  COMPLETED
+  ARCHIVED
+}
+
+model Expedition {
+  id           String           @id @default(cuid())
+  code         String           @unique
+  name         String
+  description  String?
+  destination  String?
+  objectives   String?
+  status       ExpeditionStatus @default(DRAFT)
+  season       String
+  plannedStart DateTime?
+  plannedEnd   DateTime?
+  activatedAt  DateTime?
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  stations       Station[]
+  teams          Team[]
+  personnel      Personnel[]
+  missions       Mission[]
+  cargoItems     CargoItem[]
+  inventoryItems InventoryItem[]
+  assets         Asset[]
+  incidents      Incident[]
+  readinessItems ExpeditionReadinessItem[]
+  userScopes     UserExpeditionScope[]
+  auditEvents    AuditEvent[]
+  syncOperations SyncOperation[]
+}
+
+model ExpeditionReadinessItem {
+  id            String    @id @default(cuid())
+  expeditionId  String
+  key           String
+  label         String
+  isComplete    Boolean   @default(false)
+  completedAt   DateTime?
+  completedById String?
+  expedition    Expedition @relation(fields: [expeditionId], references: [id], onDelete: Cascade)
+
+  @@unique([expeditionId, key])
+}
+
+model Station {
+  id           String  @id @default(cuid())
+  expeditionId String
+  name         String
+  code         String
+  /// Simulated coordinates — UI must label as Simulated
+  latitude     Float?
+  longitude    Float?
+  elevationM   Int?
+
+  expedition         Expedition      @relation(fields: [expeditionId], references: [id], onDelete: Cascade)
+  teams              Team[]
+  inventoryItems     InventoryItem[]
+  assets             Asset[]
+  cargoOrigins       CargoItem[]     @relation("CargoOrigin")
+  cargoDestinations  CargoItem[]     @relation("CargoDestination")
+
+  @@unique([expeditionId, code])
+}
+
+model Team {
+  id           String  @id @default(cuid())
+  expeditionId String
+  stationId    String?
+  name         String
+  callsign     String?
+
+  expedition Expedition  @relation(fields: [expeditionId], references: [id], onDelete: Cascade)
+  station    Station?    @relation(fields: [stationId], references: [id])
+  personnel  Personnel[]
+  missions   Mission[]
+}
+
+enum PersonnelStatus {
+  ACTIVE
+  ON_MISSION
+  STANDBY
+  EVACUATED
+}
+
+model Personnel {
+  id           String          @id @default(cuid())
+  expeditionId String
+  teamId       String?
+  employeeCode String
+  fullName     String
+  roleTitle    String
+  status       PersonnelStatus @default(ACTIVE)
+  medicalClearancePending Boolean @default(false)
+  /// Last device sync (demo field connectivity signal)
+  lastDeviceSyncAt        DateTime?
+
+  expedition Expedition @relation(fields: [expeditionId], references: [id], onDelete: Cascade)
+  team       Team?      @relation(fields: [teamId], references: [id])
+  user       User?      @relation("UserPersonnel")
+  nextOfKin  User?      @relation("NextOfKinUser")
+
+  missionAssignments MissionPersonnel[]
+  ledMissions        Mission[]          @relation("MissionLead")
+  checkIns           CheckIn[]
+
+  @@unique([expeditionId, employeeCode])
+}
+
+// ─── Missions & field activity ─────────────────────────────────────────────
+
+enum MissionStatus {
+  PLANNED
+  ACTIVE
+  RETURNED
+  OVERDUE
+  CANCELLED
+}
+
+model Mission {
+  id                     String        @id @default(cuid())
+  expeditionId           String
+  teamId                 String
+  leadId                 String?
+  title                  String
+  code                   String
+  status                 MissionStatus @default(PLANNED)
+  plannedDepartAt        DateTime
+  expectedReturnAt       DateTime
+  actualReturnAt         DateTime?
+  checkInIntervalMinutes Int           @default(120)
+  lastCheckInAt          DateTime?
+  briefingNotes          String?
+
+  expedition Expedition         @relation(fields: [expeditionId], references: [id], onDelete: Cascade)
+  team       Team               @relation(fields: [teamId], references: [id])
+  lead       Personnel?         @relation("MissionLead", fields: [leadId], references: [id])
+  personnel  MissionPersonnel[]
+  checkIns   CheckIn[]
+  incidents  Incident[]
+
+  @@unique([expeditionId, code])
+}
+
+model MissionPersonnel {
+  missionId   String
+  personnelId String
+  mission     Mission   @relation(fields: [missionId], references: [id], onDelete: Cascade)
+  personnel   Personnel @relation(fields: [personnelId], references: [id], onDelete: Cascade)
+
+  @@id([missionId, personnelId])
+}
+
+enum CheckInStatus {
+  ON_TIME
+  LATE
+  MISSED
+}
+
+model CheckIn {
+  id                    String        @id @default(cuid())
+  missionId             String
+  personnelId           String
+  status                CheckInStatus
+  message               String?
+  simulatedLatitude     Float?
+  simulatedLongitude    Float?
+  isLocationSimulated   Boolean       @default(true)
+  checkedInAt           DateTime      @default(now())
+
+  mission   Mission   @relation(fields: [missionId], references: [id], onDelete: Cascade)
+  personnel Personnel @relation(fields: [personnelId], references: [id], onDelete: Cascade)
+}
+
+// ─── Cargo pipeline ──────────────────────────────────────────────────────────
+
+enum CargoItemStatus {
+  CREATED
+  PACKED
+  DISPATCHED
+  IN_TRANSIT
+  DELIVERED
+  DELAYED
+  DAMAGED
+}
+
+enum CargoEventType {
+  STATUS_CHANGE
+  NOTE
+  LOCATION_UPDATE
+}
+
+model CargoItem {
+  id                    String          @id @default(cuid())
+  expeditionId          String
+  manifestCode          String
+  description           String
+  weightKg              Float?
+  status                CargoItemStatus @default(CREATED)
+  originStationId       String?
+  destinationStationId  String?
+  createdAt             DateTime        @default(now())
+  updatedAt             DateTime        @updatedAt
+
+  expedition          Expedition @relation(fields: [expeditionId], references: [id], onDelete: Cascade)
+  originStation       Station?   @relation("CargoOrigin", fields: [originStationId], references: [id])
+  destinationStation  Station?   @relation("CargoDestination", fields: [destinationStationId], references: [id])
+  events              CargoEvent[]
+
+  @@unique([expeditionId, manifestCode])
+}
+
+model CargoEvent {
+  id          String           @id @default(cuid())
+  cargoItemId String
+  eventType   CargoEventType
+  fromStatus  CargoItemStatus?
+  toStatus    CargoItemStatus?
+  note        String?
+  actorUserId String?
+  createdAt   DateTime         @default(now())
+
+  cargoItem CargoItem @relation(fields: [cargoItemId], references: [id], onDelete: Cascade)
+  actor     User?     @relation(fields: [actorUserId], references: [id])
+}
+
+// ─── Inventory (transaction ledger) ──────────────────────────────────────────
+
+enum InventoryTransactionType {
+  RECEIPT
+  CONSUMPTION
+  LOSS
+  ADJUSTMENT
+}
+
+model InventoryItem {
+  id                   String  @id @default(cuid())
+  expeditionId         String
+  stationId            String
+  sku                  String
+  name                 String
+  category             String
+  unit                 String
+  /// Alert when computed balance falls below this
+  lowStockThreshold    Decimal
+  /// Units per day for resupply projections (Phase 5)
+  dailyConsumptionRate Decimal?
+
+  expedition   Expedition             @relation(fields: [expeditionId], references: [id], onDelete: Cascade)
+  station      Station                @relation(fields: [stationId], references: [id], onDelete: Cascade)
+  transactions InventoryTransaction[]
+
+  @@unique([stationId, sku])
+}
+
+model InventoryTransaction {
+  id              String                   @id @default(cuid())
+  inventoryItemId String
+  type            InventoryTransactionType
+  /// Signed quantity delta: + receipt/adjustment in, − consumption/loss
+  quantity        Decimal
+  reference       String?
+  note            String?
+  actorUserId     String?
+  occurredAt      DateTime                 @default(now())
+
+  inventoryItem InventoryItem @relation(fields: [inventoryItemId], references: [id], onDelete: Cascade)
+  actor         User?         @relation(fields: [actorUserId], references: [id])
+}
+
+// ─── Assets ──────────────────────────────────────────────────────────────────
+
+enum AssetStatus {
+  OPERATIONAL
+  MAINTENANCE
+  DECOMMISSIONED
+}
+
+model Asset {
+  id           String      @id @default(cuid())
+  expeditionId String
+  stationId    String?
+  assetTag     String
+  name         String
+  category     String
+  status       AssetStatus @default(OPERATIONAL)
+  lastServiceAt DateTime?
+
+  expedition Expedition @relation(fields: [expeditionId], references: [id], onDelete: Cascade)
+  station    Station?   @relation(fields: [stationId], references: [id])
+
+  @@unique([expeditionId, assetTag])
+}
+
+// ─── Incidents & emergency ───────────────────────────────────────────────────
+
+enum IncidentSeverity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum IncidentStatus {
+  NEW
+  ACKNOWLEDGED
+  INVESTIGATING
+  RESPONSE_ACTIVE
+  RESOLVED
+  CLOSED
+}
+
+model Incident {
+  id                     String           @id @default(cuid())
+  expeditionId           String
+  missionId              String?
+  title                  String
+  severity               IncidentSeverity
+  status                 IncidentStatus   @default(NEW)
+  summary                String?
+  /// Last confirmed position (separate from live operational picture in Phase 4)
+  lastConfirmedLat       Float?
+  lastConfirmedLng       Float?
+  lastConfirmedAt        DateTime?
+  currentStatusSummary   String?
+  acknowledgedAt         DateTime?
+  resolvedAt             DateTime?
+  createdAt              DateTime         @default(now())
+  updatedAt              DateTime         @updatedAt
+
+  expedition Expedition @relation(fields: [expeditionId], references: [id], onDelete: Cascade)
+  mission    Mission?   @relation(fields: [missionId], references: [id])
+}
+
+// ─── Audit & offline sync ──────────────────────────────────────────────────────
+
+enum AuditAction {
+  CREATE
+  UPDATE
+  DELETE
+  STATUS_CHANGE
+  ACTIVATE
+  DEACTIVATE
+  LOGIN
+  LOGOUT
+}
+
+model AuditEvent {
+  id            String      @id @default(cuid())
+  actorUserId   String?
+  expeditionId  String?
+  entityType    String
+  entityId      String
+  action        AuditAction
+  previousState String?
+  newState      String?
+  metadata      String?
+  createdAt     DateTime    @default(now())
+
+  actor      User?       @relation("AuditActor", fields: [actorUserId], references: [id])
+  expedition Expedition? @relation(fields: [expeditionId], references: [id])
+}
+
+enum SyncOperationStatus {
+  PENDING
+  SYNCING
+  SYNCED
+  FAILED
+}
+
+/// Server-side record of field offline queue replays (Phase 3)
+model SyncOperation {
+  id                String              @id @default(cuid())
+  clientOperationId String              @unique
+  userId            String
+  expeditionId      String
+  operationType     String
+  payload           String
+  status            SyncOperationStatus @default(PENDING)
+  errorMessage      String?
+  createdAt         DateTime            @default(now())
+  syncedAt          DateTime?
+
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expedition Expedition @relation(fields: [expeditionId], references: [id], onDelete: Cascade)
+}
