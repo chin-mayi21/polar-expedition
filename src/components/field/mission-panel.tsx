@@ -36,6 +36,7 @@ export function MissionPanel({
         : "neutral";
 
   async function submitCheckIn() {
+    if (!activeMission) return;
     setBusy(true);
     try {
       await queueFieldOperation("CHECK_IN", {

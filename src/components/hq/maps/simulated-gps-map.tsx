@@ -29,7 +29,7 @@ export function SimulatedGpsMap({
       style: "https://demotiles.maplibre.org/style.json",
       center,
       zoom: 4,
-      attributionControl: true,
+      attributionControl: {},
     });
     map.addControl(new maplibregl.NavigationControl({ showCompass: true }), "top-right");
     mapRef.current = map;

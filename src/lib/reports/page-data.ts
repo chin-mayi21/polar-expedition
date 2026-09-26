@@ -1,4 +1,4 @@
-import type { ReadinessRule } from "@/lib/expedition/readiness-explained";
+import type { ExplainedReadiness, ReadinessRule } from "@/lib/expedition/readiness-explained";
 import { explainExpeditionReadiness } from "@/lib/expedition/readiness-explained";
 import { listInventoryForExpeditions } from "@/lib/inventory/queries";
 import {
@@ -20,13 +20,25 @@ export type ReportsPageData = {
     dailyRate: number | null;
     unit: string;
   }[];
-  explained: { pass: boolean; rules: ReadinessRule[] };
+  explained: ExplainedReadiness;
   readinessError: string | null;
 };
 
-async function loadExplained(expeditionId: string | undefined) {
+const readinessEngineErrorRule = (message: string): ReadinessRule => ({
+  key: "readiness_engine_error",
+  label: "Readiness engine",
+  category: "expedition",
+  pass: false,
+  explanation:
+    "Could not evaluate readiness rules. Stop the dev server, run `npx prisma generate`, then restart. Details: " +
+    message.slice(0, 200),
+});
+
+async function loadExplained(
+  expeditionId: string | undefined
+): Promise<{ explained: ExplainedReadiness; readinessError: string | null }> {
   if (!expeditionId) {
-    return { explained: { pass: true, rules: [] as ReadinessRule[] }, readinessError: null };
+    return { explained: { pass: true, rules: [] }, readinessError: null };
   }
   try {
     const explained = await explainExpeditionReadiness(expeditionId);
@@ -37,17 +49,7 @@ async function loadExplained(expeditionId: string | undefined) {
     return {
       explained: {
         pass: false,
-        rules: [
-          {
-            key: "readiness_engine_error",
-            label: "Readiness engine",
-            category: "expedition",
-            pass: false,
-            explanation:
-              "Could not evaluate readiness rules. Stop the dev server, run `npx prisma generate`, then restart. Details: " +
-              message.slice(0, 200),
-          },
-        ],
+        rules: [readinessEngineErrorRule(message)],
       },
       readinessError: message,
     };

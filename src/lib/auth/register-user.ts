@@ -70,7 +70,7 @@ export async function registerUser(input: RegisterInput) {
           expeditionId: expedition.id,
           nextOfKin: null,
         },
-        orderBy: { createdAt: "asc" },
+        orderBy: { fullName: "asc" },
       });
       if (!personnel) {
         throw new Error("FAMILY_LINK_UNAVAILABLE");

@@ -101,7 +101,12 @@ export function InventoryTransactionForm({ items }: { items: InventoryOption[] }
         </div>
         <div className="space-y-2">
           <Label htmlFor="quantity">Quantity</Label>
-          <Input id="quantity" type="number" step="any" {...form.register("quantity")} />
+          <Input
+            id="quantity"
+            type="number"
+            step="any"
+            {...form.register("quantity", { valueAsNumber: true })}
+          />
           {form.formState.errors.quantity ? (
             <p className="text-xs text-red">{form.formState.errors.quantity.message}</p>
           ) : null}

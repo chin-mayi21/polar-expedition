@@ -76,7 +76,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           const { registerUser } = await import("@/lib/auth/register-user");
           user = await registerUser({
             email,
-            name: profile.name ?? email,
+            name: profile?.name ?? email,
             role: pendingRole,
             googleId: account.providerAccountId,
           });
