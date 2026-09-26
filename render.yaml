@@ -11,5 +11,6 @@ services:
         value: file:./data/prod.db
       - key: AUTH_SECRET
         generateValue: true
+      # Must be your public Render URL — never localhost or :10000
       - key: AUTH_URL
-        sync: false
+        value: https://cryolink-bk00.onrender.com

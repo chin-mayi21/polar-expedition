@@ -4,7 +4,7 @@ export function authErrorMessage(code: string | null): string | null {
 
   switch (code) {
     case "Configuration":
-      return "Server auth is not configured. Set AUTH_SECRET (and AUTH_URL to your public site URL) on the host, then redeploy.";
+      return "Auth is misconfigured. On Render set AUTH_SECRET and AUTH_URL to your public URL (e.g. https://cryolink-bk00.onrender.com) — not localhost or port 10000. Locally run npm run dev and open http://localhost:3000.";
     case "AccessDenied":
       return "Access denied. This account may not use the sign-in method you chose.";
     case "Verification":
