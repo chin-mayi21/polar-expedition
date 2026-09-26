@@ -50,7 +50,7 @@ export default function LoginPage() {
             "Invalid credentials. Use demo passwords below, sign up for a new account, or run npm run db:seed."
           );
         } else {
-          setFormError("This account is not authorized for the selected role.");
+          setFormError("Sign-in could not be completed. Check the database setup and try again.");
         }
         return;
       }

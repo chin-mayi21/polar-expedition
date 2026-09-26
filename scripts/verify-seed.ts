@@ -1,5 +1,8 @@
+import { loadEnvConfig } from "@next/env";
 import { PrismaClient } from "@prisma/client";
 import { listInventoryForExpeditions } from "../src/lib/inventory/queries";
+
+loadEnvConfig(process.cwd());
 
 const prisma = new PrismaClient();
 
