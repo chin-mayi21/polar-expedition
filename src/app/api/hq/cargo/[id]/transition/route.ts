@@ -3,13 +3,9 @@ import { z } from "zod";
 import { CargoItemStatus, CargoEventType } from "@prisma/client";
 import { isSessionUser, requireHqOfficial } from "@/lib/auth/require-session";
 import {
-  deliveredEvidenceSchema,
-  dispatchedEvidenceSchema,
   evidenceSchemaForTransition,
-  inTransitEvidenceSchema,
   issueEvidenceSchema,
   nextPipelineStatus,
-  packedEvidenceSchema,
 } from "@/lib/cargo/pipeline";
 import { prisma } from "@/lib/prisma";
 

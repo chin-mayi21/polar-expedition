@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Cloud, CloudOff, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
@@ -19,15 +19,24 @@ export function SyncPanel() {
   const [busy, setBusy] = useState(false);
   const [queuePreview, setQueuePreview] = useState<string[]>([]);
 
-  useEffect(() => {
-    refreshQueue();
-  }, []);
-
-  async function refreshQueue() {
+  const refreshQueue = useCallback(async () => {
     const rows = await listQueuedOperations();
     setPendingCount(rows.length);
     setQueuePreview(rows.map((r) => `${r.operationType} · ${r.clientCreatedAt.slice(11, 19)}`));
-  }
+  }, [setPendingCount]);
+
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      const rows = await listQueuedOperations();
+      if (cancelled) return;
+      setPendingCount(rows.length);
+      setQueuePreview(rows.map((r) => `${r.operationType} · ${r.clientCreatedAt.slice(11, 19)}`));
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [setPendingCount]);
 
   async function syncNow() {
     setBusy(true);

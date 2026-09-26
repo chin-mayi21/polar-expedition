@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { GoogleSignInButton } from "@/components/auth/google-sign-in-button";
 import { AlertCircle, ArrowLeft } from "lucide-react";
+import { authErrorMessage } from "@/lib/auth/auth-error-messages";
 import { DEMO_PASSWORD, getRoleEntry, isUserRole } from "@/lib/auth/role-entry";
 
 export default function LoginPage() {
@@ -22,16 +23,17 @@ export default function LoginPage() {
 
   const [email, setEmail] = useState(roleEntry?.demoEmail ?? "");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(oauthErrorMessage(errorParam));
+  const [formError, setFormError] = useState<string | null>(null);
+  const error = formError ?? authErrorMessage(errorParam);
   const [loading, setLoading] = useState(false);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!roleEntry) {
-      setError("Select a role on the entry screen first.");
+      setFormError("Select a role on the entry screen first.");
       return;
     }
-    setError(null);
+    setFormError(null);
     setLoading(true);
     try {
       const result = await signIn("credentials", {
@@ -43,11 +45,11 @@ export default function LoginPage() {
 
       if (result?.error) {
         if (result.error === "CredentialsSignin") {
-          setError(
+          setFormError(
             "Invalid credentials. Use demo passwords below, sign up for a new account, or run npm run db:seed."
           );
         } else {
-          setError("This account is not authorized for the selected role.");
+          setFormError("This account is not authorized for the selected role.");
         }
         return;
       }
@@ -55,7 +57,7 @@ export default function LoginPage() {
       router.push("/");
       router.refresh();
     } catch {
-      setError("Network error. Try again.");
+      setFormError("Network error. Try again.");
     } finally {
       setLoading(false);
     }
@@ -173,16 +175,3 @@ export default function LoginPage() {
   );
 }
 
-function oauthErrorMessage(code: string | null): string | null {
-  if (!code) return null;
-  if (code === "OAuthRoleRequired") {
-    return "Choose your role on the home screen, then use Google sign-in from that role’s login page.";
-  }
-  if (code === "OAuthSignupFailed") {
-    return "Google sign-up failed. Run npm run db:seed, then try again.";
-  }
-  if (code === "RoleMismatch") {
-    return "This Google account belongs to a different role. Go back and pick the correct role card.";
-  }
-  return "Sign-in failed. Try email/password or sign up.";
-}

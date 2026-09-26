@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { CheckCircle2, Circle } from "lucide-react";
 
 type ExpeditionPayload = {
@@ -60,8 +59,26 @@ export function ExpeditionWorkflow({ expeditionId }: { expeditionId: string }) {
   }, [expeditionId]);
 
   useEffect(() => {
-    load();
-  }, [load]);
+    let cancelled = false;
+    void (async () => {
+      try {
+        const [exRes, rdRes] = await Promise.all([
+          fetch(`/api/hq/expeditions/${expeditionId}`),
+          fetch(`/api/hq/expeditions/${expeditionId}/readiness`),
+        ]);
+        const exJson = await exRes.json();
+        const rdJson = await rdRes.json();
+        if (cancelled) return;
+        if (exRes.ok) setData(exJson.expedition);
+        if (rdRes.ok) setBlockers(rdJson.blockers ?? []);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [expeditionId]);
 
   async function patchExpedition(fields: Record<string, string>) {
     const res = await fetch(`/api/hq/expeditions/${expeditionId}`, {
@@ -324,6 +341,15 @@ function StepMission({
     <div className="mt-2 space-y-2">
       <Input value={code} onChange={(e) => setCode(e.target.value)} placeholder="MSN code" />
       <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Mission title" />
+      <select
+        className="flex h-10 w-full border border-border px-2 text-sm rounded-[2px]"
+        value={teamId}
+        onChange={(e) => setTeamId(e.target.value)}
+      >
+        {teams.map((t) => (
+          <option key={t.id} value={t.id}>{t.name}</option>
+        ))}
+      </select>
       <Button type="button" size="sm" onClick={create} disabled={!title || !code || !teamId}>
         Create mission
       </Button>

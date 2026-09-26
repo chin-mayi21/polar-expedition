@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { listQueuedOperations } from "@/lib/field/offline-db";
 import { flushFieldQueue } from "@/lib/field/sync-client";
@@ -11,18 +11,18 @@ export function FieldSyncProvider({ children }: { children: React.ReactNode }) {
   const setPendingCount = useFieldConnectivity((s) => s.setPendingCount);
   const forceOffline = useFieldConnectivity((s) => s.forceOffline);
 
-  async function refreshPending() {
+  const refreshPending = useCallback(async () => {
     const pending = await listQueuedOperations();
     setPendingCount(pending.length);
-  }
+  }, [setPendingCount]);
 
-  async function tryFlush() {
+  const tryFlush = useCallback(async () => {
     if (useFieldConnectivity.getState().isEffectivelyOnline()) {
       await flushFieldQueue();
       await refreshPending();
       router.refresh();
     }
-  }
+  }, [refreshPending, router]);
 
   useEffect(() => {
     refreshPending();
@@ -31,7 +31,7 @@ export function FieldSyncProvider({ children }: { children: React.ReactNode }) {
     const onOnline = () => tryFlush();
     window.addEventListener("online", onOnline);
     return () => window.removeEventListener("online", onOnline);
-  }, [forceOffline]);
+  }, [forceOffline, refreshPending, tryFlush]);
 
   return children;
 }

@@ -155,7 +155,8 @@ export default function SignupPage() {
         {roleEntry.role === "FAMILY_NOK" ? (
           <p className="mt-4 text-xs leading-relaxed text-text-secondary">
             New family accounts link to the next available expedition member in the demo database. If sign-up
-            fails, use <span className="font-mono">family.alpha@cryolink.in</span> / demo-family-2026 after{" "}
+            fails, use <span className="font-mono">demo-family@ncpor.test</span> /{" "}
+            <span className="font-mono">demo1234</span> after{" "}
             <span className="font-mono">npm run db:seed</span>.
           </p>
         ) : null}

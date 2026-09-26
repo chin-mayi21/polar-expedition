@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState, useSyncExternalStore } from "react";
 import {
   LineChart,
   Line,
@@ -21,12 +21,18 @@ type SimItem = {
   unit: string;
 };
 
+function useIsClient() {
+  return useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
+}
+
 export function ResupplySimulator({ items }: { items: SimItem[] }) {
-  const [mounted, setMounted] = useState(false);
+  const mounted = useIsClient();
   const [itemId, setItemId] = useState(items[0]?.id ?? "");
   const [delayDays, setDelayDays] = useState(14);
-
-  useEffect(() => setMounted(true), []);
 
   const selected = items.find((i) => i.id === itemId) ?? items[0];
 
